@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: py${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      # Install into a clean virtual environment, exactly as the README says to,
+      # so that a broken install instruction fails CI rather than the reviewer.
+      - name: Install the package
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install --upgrade pip
+          .venv/bin/pip install ".[dev,api]"
+
+      - name: Lint
+        run: .venv/bin/ruff check src tests
+
+      - name: Format check
+        run: .venv/bin/ruff format --check src tests
+
+      - name: Test
+        run: .venv/bin/pytest --cov=prism_ex --cov-report=term-missing
+
+      - name: Verify the README worked example runs
+        run: |
+          .venv/bin/prism-ex demo /tmp/ci-demo.fcs --events 3000
+          .venv/bin/prism-ex info /tmp/ci-demo.fcs
+          .venv/bin/prism-ex communities /tmp/ci-demo.fcs --k 20
+
+  build:
+    name: build sdist and wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pipx run build
+      - name: Install the built wheel into a clean environment
+        run: |
+          python -m venv /tmp/wheel-check
+          /tmp/wheel-check/bin/pip install dist/*.whl
+          /tmp/wheel-check/bin/python -c "import prism_ex; print(prism_ex.__version__)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distributions
+          path: dist/*
