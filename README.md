@@ -165,6 +165,23 @@ src/prism_ex/
   cli.py, api.py    interfaces
 ```
 
+## Why these choices
+
+`scripts/decision_evidence.py` re-derives the evidence behind every design decision
+in the package — reader strictness against an independent reader, transform and
+scaling, edge weighting, Leiden vs Louvain, the effect-size choice, why p-values are
+refused inside the clustering subspace, and why resampling is sub-sampling rather
+than bootstrap.
+
+```bash
+python scripts/decision_evidence.py           # ~4 minutes
+python scripts/decision_evidence.py --quick   # ~1 minute
+python scripts/decision_evidence.py --only 5  # just one section
+```
+
+Two of the eight sections report null results that do not support the default
+chosen. They are kept.
+
 ## Tests
 
 ```bash
