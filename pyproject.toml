@@ -9,7 +9,7 @@ description = "Strict FCS 3.1 ingestion, community detection, marker comparison 
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "Candidate" }]
+authors = [{ name = "Hossam Boudraa" }]
 keywords = ["flow-cytometry", "fcs", "community-detection", "leiden", "stability"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -48,7 +48,7 @@ dev = [
 prism-ex = "prism_ex.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/candidate/prism-ex"
+Homepage = "https://github.com/hossambd/prism-ex"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/prism_ex"]

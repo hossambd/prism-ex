@@ -4,7 +4,7 @@ Strict FCS 3.1 ingestion, community detection over a marker subspace, quantitati
 comparison of two communities, and evidence about where the resulting partition can
 be relied on.
 
-[![CI](https://github.com/candidate/prism-ex/actions/workflows/ci.yml/badge.svg)](https://github.com/candidate/prism-ex/actions/workflows/ci.yml)
+[![CI](https://github.com/hossambd/prism-ex/actions/workflows/ci.yml/badge.svg)](https://github.com/hossambd/prism-ex/actions/workflows/ci.yml)
 
 Four results, each built on the one before it:
 
