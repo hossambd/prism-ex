@@ -432,13 +432,19 @@ def evidence_resampling_scheme(fcs, quick: bool) -> None:
         f"{'sub-sample mean J':>19s} {'difference':>12s}"
     )
     print("-" * 78)
+    gaps = []
     for community in sorted(reference):
         boot = float(np.mean(bootstrap_scores[community]))
         sub = by_id[community].mean_jaccard
+        gaps.append(abs(boot - sub))
         print(f"{community:>10d} {boot:>18.3f} {sub:>19.3f} {boot - sub:>+12.3f}")
 
+    # Quoting the observed maximum rather than a hard-coded one: the figure depends
+    # on the number of resamples, and a narrative that contradicts the table above it
+    # is worse than no narrative.
     print(
-        "\nReading: the two schemes disagree by up to 0.16 Jaccard, and they disagree most on\n"
+        f"\nReading: the two schemes disagree by up to {max(gaps):.2f} Jaccard, and they "
+        "disagree most on\n"
         "exactly the communities whose status is in question -- the ambiguous pair and the\n"
         "rare population, whose small neighbourhoods are dominated by duplicate-induced\n"
         "zero-distance edges. The bias is not in one direction, which is worse than a bias\n"
