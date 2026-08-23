@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import tempfile
 import warnings
 from pathlib import Path
 
@@ -35,6 +36,7 @@ from prism_ex.synth import CLUSTERING_MARKERS, make_dataset, write_demo_file
 
 SEED = 20260817
 N_EVENTS = 6000
+EVIDENCE_PATH = Path(tempfile.gettempdir()) / "prism-ex-evidence.fcs"
 
 
 def heading(text: str) -> None:
@@ -317,7 +319,7 @@ def evidence_circular_inference(quick: bool) -> None:
     )
 
     print("  Specificity check -- the same procedure on data that does contain populations:")
-    demo = read_fcs(Path("/tmp/prism-ex-evidence.fcs"))
+    demo = read_fcs(EVIDENCE_PATH)
     real = find_communities(demo, CommunityConfig(markers=CLUSTERING_MARKERS))
     honest = compare_communities(
         real,
@@ -476,7 +478,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--only", type=int, default=None, help="run a single numbered section")
     args = parser.parse_args(argv)
 
-    path = Path("/tmp/prism-ex-evidence.fcs")
+    path = EVIDENCE_PATH
     write_demo_file(path, N_EVENTS, seed=SEED)
     fcs = read_fcs(path)
     truth = make_dataset(N_EVENTS, seed=SEED).labels
