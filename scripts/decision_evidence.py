@@ -465,10 +465,12 @@ def evidence_determinism(fcs) -> None:
     print(f"  edges  : {[run.graph.n_edges for run in runs]}")
     print(f"  config id: {runs[0].partition.provenance.config_id}")
     print(
-        "\n  Independently reproduced on Google Colab (Python 3.12.13, numpy 2.5.2,\n"
-        "  scipy 1.18.0, scikit-learn 1.9.0 -- all different from the development\n"
-        "  environment): identical sizes, identical quality 48099.4187, identical\n"
-        "  121474 edges, identical parameter-sweep table."
+        "\n  Independently reproduced in four environments: Linux/Python 3.12 (development),\n"
+        "  Google Colab on Python 3.12.13 and again on 3.13.15 (numpy 2.5.2, scipy 1.18.x,\n"
+        "  scikit-learn 1.9.0 -- all different majors or minors from the development box),\n"
+        "  and Windows 11. Identical community sizes, identical quality 48099.4187,\n"
+        "  identical 121474 edges, identical configuration hash, identical sweep table.\n"
+        "  Two operating systems, three Python versions, two dependency generations."
     )
 
 
@@ -477,6 +479,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--quick", action="store_true", help="fewer resamples")
     parser.add_argument("--only", type=int, default=None, help="run a single numbered section")
     args = parser.parse_args(argv)
+
+    if args.quick:
+        print(
+            "NOTE: --quick reduces the sample sizes in sections 5 and 7 (2000 events\n"
+            "instead of 4000; 5 resamples instead of 15). Those two sections will not\n"
+            "reproduce the figures quoted in the report, which come from a full run.\n"
+            "Sections 1-4, 6 and 8 are unaffected. Run without --quick to reproduce\n"
+            "the report exactly."
+        )
 
     path = EVIDENCE_PATH
     write_demo_file(path, N_EVENTS, seed=SEED)
