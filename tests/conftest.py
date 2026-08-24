@@ -1,9 +1,8 @@
 """Shared fixtures.
 
-Everything here is generated in code. Section 3.2 of the brief warns that a suite
-depending on a file present only on the candidate's machine will be treated as
-absent; generating the fixtures also means each corruption test can point at the
-exact byte it broke.
+Fixtures are generated in code rather than committed, so the suite has no
+dependency on files present only on one machine, and each corruption test can point
+at the exact byte it broke.
 """
 
 from __future__ import annotations

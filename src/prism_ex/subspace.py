@@ -1,16 +1,13 @@
-"""Marker subspace selection: the join between section 2.1 and section 2.2.
+"""Marker subspace selection.
 
-Sections 2.2 and 2.3 both say "in a marker subspace chosen by the caller", and
-they say it separately. That is taken literally here: the subspace is a first-class
-object rather than an argument threaded through the clustering functions, so the
-subspace a comparison is computed in need not be the one the communities were found
-in. Comparing two clusters on markers that were not used to define them is a more
-informative comparison than comparing them on the markers that separated them by
-construction, and the API should not make that awkward.
+The subspace is a first-class object rather than an argument threaded through the
+clustering functions, so that the subspace used for comparison need not be the one
+communities were derived in. Comparing communities on markers held out of the
+clustering is more informative than comparing them on the markers that separated
+them by construction.
 
-Transform and scaling live here rather than in the reader because the reader's job
-is to return what the file says, and asinh cofactors are an analysis choice, not a
-property of the file.
+Transform and scaling live here rather than in the reader: cofactors are an
+analysis choice, not a property of the file.
 """
 
 from __future__ import annotations

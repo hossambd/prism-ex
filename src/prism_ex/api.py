@@ -1,17 +1,10 @@
-"""Optional HTTP endpoint (one half of section 2.5).
+"""Optional HTTP endpoint.
 
-Built rather than described because it is twenty lines on top of an API that
-already exists, and because it forced one design question worth having answered:
-the endpoint receives bytes, not a path, which is why
-:func:`prism_ex.fcs.read_fcs_bytes` exists alongside
-:func:`prism_ex.fcs.read_fcs`. A reader that can only take a filename pushes every
-caller into writing temporary files.
+One endpoint returning community sizes and the provenance record. No persistence, no
+job queue, no authentication.
 
-Deliberately one endpoint and no more. There is no job queue, no persistence and
-no authentication: adding them would be inventing requirements, and each one would
-be a thing the reviewer has to read.
-
-The GPU extension is not built. See the report for how it would be approached.
+The endpoint receives bytes rather than a path, which is why
+:func:`prism_ex.fcs.read_fcs_bytes` exists alongside :func:`prism_ex.fcs.read_fcs`.
 """
 
 from __future__ import annotations

@@ -1,23 +1,21 @@
-"""A strict, atomic FCS 3.1 reader.
+"""Strict FCS 3.1 reader.
 
-Why this is written rather than delegated
------------------------------------------
-The requirement in section 2.1 is not "parse an FCS file" -- several maintained
-libraries do that -- it is that a malformed, truncated, internally inconsistent
-or wrong-version file *does not yield a partially populated result*. That is a
-statement about rejection, and rejection is exactly what general-purpose readers
-are built not to do: they are lenient by design, because their users have drawers
-full of instrument files that bend the standard and still want the events out.
+Parsing is implemented here rather than delegated to a general-purpose library
+because the requirement is rejection semantics: a malformed, truncated, internally
+inconsistent or wrong-version file must raise rather than return a partially
+populated result. Established readers are deliberately lenient, since their users
+need events out of imperfect instrument files.
 
-So the parsing is written here, in about four hundred lines, and the leniency is
-not. ``flowio`` is used in the test suite instead, as a differential oracle: for
-every well-formed file the fixtures generate, both readers must agree on the event
-matrix. That gets the correctness benefit of an established implementation without
-inheriting its error semantics.
+``flowio`` is used in the test suite as a differential oracle: for well-formed
+files both implementations must agree on the event matrix. It is not a runtime
+dependency.
 
-The read is atomic in the strong sense: the function parses into locals, validates
-everything, and constructs :class:`~prism_ex.fcs.model.FCSFile` as its final
-statement. There is no code path on which a caller observes a half-built object.
+The read is atomic: parsing writes to locals, all validation runs, and
+:class:`~prism_ex.fcs.model.FCSFile` is constructed as the final statement. No code
+path exposes a half-built object.
+
+Reference: Spidlen et al., Data File Standard for Flow Cytometry version FCS 3.1,
+Cytometry Part A 77A:97-100 (2010).
 """
 
 from __future__ import annotations
@@ -494,8 +492,8 @@ def _resolve_data_offsets(header: _Header, keywords: dict[str, str]) -> tuple[in
 
     FCS 3.1 allows the HEADER fields to be 0 when an offset exceeds eight digits,
     in which case the keywords are authoritative. When both are present they must
-    agree: a file whose two statements of where its data live disagree is exactly
-    the "internally inconsistent" case the brief asks to reject.
+    agree: a file whose two statements of where its data live disagree is
+    internally inconsistent and is rejected.
     """
     keyword_begin = _non_negative_int(keywords, "$BEGINDATA")
     keyword_end = _non_negative_int(keywords, "$ENDDATA")

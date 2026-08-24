@@ -1,10 +1,8 @@
 """Provenance records.
 
-Section 3.2 of the brief asks that the same input, the same configuration and the
-same package version return the same answer. That is a property one can claim, or
-a property one can make checkable; every result object in this package carries a
-:class:`Provenance` naming exactly the three things the guarantee is quantified
-over, so "same input" is a SHA-256 rather than a belief about a filename.
+Reproducibility is guaranteed for a given input, configuration and package version.
+Each result carries a :class:`Provenance` naming all three, so "same input" is a
+SHA-256 rather than an assumption about a filename.
 """
 
 from __future__ import annotations

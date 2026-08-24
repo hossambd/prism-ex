@@ -1,20 +1,12 @@
-"""A minimal FCS 3.1 writer.
+"""Minimal FCS 3.1 writer.
 
-This exists for one reason: section 3.2 requires fixtures that are committed or
-generated in code, and section 4.1 supplies no data. Generating the fixtures means
-being able to write the format, and being able to write the format buys three
-things that downloading a public file would not:
+Generates the fixtures used by the test suite and the synthetic datasets in
+:mod:`prism_ex.synth`. Writing the format allows corruption tests to be targeted
+mutations of a known-good file, so a rejection test demonstrates that the reader
+caught the specific defect introduced.
 
-* every corruption test in the suite is a *targeted* mutation of a known-good
-  file, so a rejection test proves the reader caught the specific defect that was
-  introduced rather than something incidental;
-* the synthetic datasets in :mod:`prism_ex.synth` carry ground-truth labels, which
-  is what makes the stability claim of section 2.4 checkable rather than merely
-  self-consistent;
-* there is no licence to state and nothing to commit that anyone else owns.
-
-The writer is deliberately narrow: list mode, one dataset, uniform width, no
-ANALYSIS segment. It is a fixture generator, not a general converter.
+Scope is deliberately narrow: list mode, one dataset, uniform parameter width, no
+ANALYSIS segment.
 """
 
 from __future__ import annotations

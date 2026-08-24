@@ -1,26 +1,20 @@
-"""Neighbourhood graph construction (first half of section 2.2).
+"""Neighbourhood graph construction.
 
-Three decisions are made here and defended in the report.
+Three choices, each exposed as a parameter:
 
-**Exact k-nearest neighbours, not approximate.** Approximate neighbour search is
-what makes million-event datasets tractable, and it is also non-deterministic in
-most implementations. Section 3.2 asks that the same input and configuration return
-the same answer, and at the scale this exercise runs at, exactness is affordable.
-The seam is left open: ``metric`` and ``algorithm`` are parameters, and an
-approximate backend would slot in behind the same call.
+Exact k-nearest-neighbour search rather than an approximate index. Approximate
+search is non-deterministic in most implementations, and reproducibility is a
+requirement; at the scale this operates on, exactness is affordable.
 
-**Ties broken by index.** Two events at identical distance are ordered by row index
-rather than by whatever order the search returned. Without this, determinism holds
-only for data with no duplicate distances -- and integer-valued cytometry data has
-plenty.
+Ties broken by row index. Equidistant neighbours are ordered by index rather than
+by backend internals, so duplicate distances -- common in integer-valued data --
+cannot reorder a neighbourhood between runs.
 
-**Shared-nearest-neighbour weights.** Edges are weighted by the Jaccard overlap of
-the two endpoints' neighbourhoods rather than by distance. In a space where local
-density varies by orders of magnitude -- which is the normal condition for
-cytometry, where one population may hold 40% of events and another 1% -- a fixed
-distance means different things in different regions, while shared neighbours are
-a local, scale-free statement. This is the same construction Seurat and scanpy use,
-for the same reason.
+Shared-nearest-neighbour Jaccard weights by default. Local density varies by
+orders of magnitude across populations, so a fixed distance means different things
+in different regions while neighbourhood overlap is scale-free. This is the
+construction used by PhenoGraph and Seurat (Jarvis and Patrick, 1973). Distance
+kernel and unweighted alternatives remain available.
 """
 
 from __future__ import annotations
@@ -85,7 +79,7 @@ def build_graph(
     k:
         Number of neighbours per event, excluding the event itself. Larger k
         smooths the graph and merges small populations; smaller k fragments them.
-        This is the parameter the stability analysis of section 2.4 varies first.
+        This is the parameter the stability analysis varies first.
     weighting:
         ``"jaccard"`` (shared-neighbour overlap, the default), ``"uniform"`` (all
         edges weight 1), or ``"distance"`` (Gaussian kernel on the distance,

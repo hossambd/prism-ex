@@ -1,9 +1,8 @@
-"""Section 2.1: a bad file yields an error, never a partial result.
+"""A malformed file yields an error, never a partial result.
 
 Each case starts from a known-good file and breaks exactly one thing, so a passing
-test says the reader caught *that* defect. The final test is the important one: it
-asserts the property the brief actually states, which is not that errors are raised
-but that nothing half-built escapes.
+test shows the reader caught that specific defect. The final test asserts the
+property directly: not that errors are raised, but that nothing half-built escapes.
 """
 
 from __future__ import annotations
@@ -148,9 +147,7 @@ def test_missing_file_raises_file_not_found(tmp_path):
 
 @pytest.mark.parametrize("cut", [59, 100, 150, 200])
 def test_no_partial_result_survives_a_truncation(cut):
-    """The property the brief states, asserted directly.
-
-    Whatever is wrong with the file, the only two outcomes are a complete object or
+    """Whatever is wrong with the file, the only outcomes are a complete object or
     an exception -- never an object with some fields filled in.
     """
     payload = good()[:cut]

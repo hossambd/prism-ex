@@ -1,23 +1,17 @@
-"""Community detection (second half of section 2.2).
+"""Community detection.
 
-Leiden is used rather than Louvain. The reason is not fashion: Louvain can return
-communities that are internally disconnected -- a node can be left in a community
-none of whose members it is adjacent to -- and a disconnected community is not a
-thing one can then make a claim about in section 2.4. Leiden's guarantee that all
-communities are internally connected is exactly the property that makes the
-stability question well posed.
+Leiden rather than Louvain: Louvain can return internally disconnected communities,
+and a community whose members are not adjacent to one another cannot support a
+stability claim. Leiden guarantees connectivity (Traag, Waltman and van Eck, 2019).
 
-RBConfiguration (modularity with a resolution parameter) is the default quality
-function. Modularity has a known resolution limit -- it cannot see communities
-below a size set by the total edge weight -- which is why ``resolution`` is exposed
-rather than fixed, and why the rare population in the synthetic data is a fair test
-rather than a trick.
+RBConfiguration (modularity with a resolution parameter) is the default objective.
+Modularity has a known resolution limit below which small communities are absorbed
+(Fortunato and Barthelemy, 2007), which is why ``resolution`` is a parameter rather
+than a constant.
 
-Determinism: Leiden is a randomised algorithm, so the seed is a parameter with a
-default rather than an implicit clock read. Communities are relabelled by
-descending size before returning, so that "community 0" means the largest one in
-every run and across runs -- without that, two identical partitions can disagree on
-every label, and every downstream comparison becomes a puzzle about labels.
+Leiden is randomised, so ``seed`` has a fixed default. Communities are relabelled by
+descending size before returning, so that community identifiers are comparable
+across runs.
 """
 
 from __future__ import annotations

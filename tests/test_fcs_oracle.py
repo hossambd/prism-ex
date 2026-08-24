@@ -1,8 +1,8 @@
 """Differential test against an independent FCS implementation.
 
 The reader in this package is hand-written, which buys the strict rejection
-semantics section 2.1 asks for and costs the confidence that comes from using
-something with users. This test buys that confidence back: for files that are
+rejection semantics and costs the confidence that comes from using something with
+users. This test recovers that confidence: for files that are
 unambiguously well-formed, an independent implementation must extract the same
 numbers. A bug in the offset arithmetic or the byte order would show up here even
 though every round-trip test in this suite would still pass, because the round-trip

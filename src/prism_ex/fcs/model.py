@@ -1,10 +1,9 @@
-"""Immutable data structures returned by the reader.
+"""Immutable result types returned by the reader.
 
-The three things section 2.1 asks for are the three attributes of
-:class:`FCSFile`: :attr:`~FCSFile.keywords`, :attr:`~FCSFile.channels` and
-:attr:`~FCSFile.events`. Everything here is frozen and the event matrix is
-returned read-only, because a result object that a caller can mutate is a result
-object whose provenance record is a lie.
+:class:`FCSFile` exposes the three things a caller needs: keywords, per-channel
+metadata and the event matrix with named columns. All types are frozen and the
+event matrix is returned read-only, so a result cannot be mutated out of agreement
+with the provenance record attached to it.
 """
 
 from __future__ import annotations

@@ -1,24 +1,15 @@
 """Synthetic cytometry-shaped data with ground-truth labels.
 
-Section 4.1 supplies no data and permits candidate-generated data. Generated data
-is chosen here over a public FCS file for a reason that goes beyond licence
-hygiene: the claim asked for in section 2.4 is about where a partition can be
-relied on, and on a real file "reliable" can only mean "reproducible under
-resampling". With labels in hand it can also mean "right", so the resampling
-statistics can themselves be checked against the truth they are standing in for.
+Generated rather than downloaded so that resampling statistics can be checked
+against known labels, and so that no third-party data is redistributed.
 
-The generator is built so that the answer is not uniformly easy. It contains
+The generator is not uniformly easy. It contains four well-separated populations; a
+pair separated by roughly one within-population standard deviation, which merges or
+splits depending on resolution; a rare population at about 1.5% of events; and two
+channels with no population structure.
 
-* four well-separated populations, which any sane method recovers;
-* a pair of populations separated by roughly one within-population standard
-  deviation, which merge or split depending on resolution -- the honest content
-  of the section 2.4 claim;
-* a rare population at about 1.5% of events, where sampling noise dominates;
-* two channels with no population structure at all, to punish blind inclusion of
-  every channel in the subspace.
-
-Marker names are borrowed from immunology only as familiar labels. Nothing here
-models biology, and nothing downstream depends on it.
+Marker names are used as familiar labels only. Nothing here models biology and
+nothing downstream depends on it.
 """
 
 from __future__ import annotations

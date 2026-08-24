@@ -1,34 +1,21 @@
-"""Evidence for the claim of section 2.4.
+"""Partition stability measurements.
 
-The brief is explicit that the deliverable of 2.4 is a supported claim in the
-report, not a piece of software. This module is therefore not the deliverable: it
-is the instrument that produces the numbers the claim is made from, and it is in
-the package rather than in a notebook so that the reviewer can re-run it.
+Four independent sources of variation are measured separately, because they have
+different remedies:
 
-"How stable is the partition" is not one question, and answering it as if it were
-is how a stability number becomes meaningless. Four separate things can wobble, and
-they are measured separately because they have different remedies:
+1. The algorithm. Leiden is randomised; re-running on the same graph with a
+   different seed should not change the result materially.
+2. The sample. Repeated re-clustering of a random subsample, with each reference
+   community matched back by maximum Jaccard overlap -- the construction of Hennig
+   (2007). Sub-sampling is used instead of the bootstrap he proposes: a bootstrap
+   duplicates events, and a duplicated event is its own nearest neighbour at
+   distance zero, which perturbs the graph under measurement.
+3. The parameters. A grid over k and resolution.
+4. The individual event. Per-event frequency of returning to its own community,
+   separating population cores from boundaries.
 
-1. **The algorithm.** Leiden is randomised. Re-running it on the same graph with a
-   different seed must not change the answer much; if it does, nothing else in the
-   analysis is interpretable. This is the cheapest check and the first to fail.
-2. **The sample.** Would a different draw of events from the same tube give the same
-   communities? Measured by repeatedly re-clustering a random 80% and matching the
-   resulting communities back to the reference by Jaccard overlap, per community --
-   the construction from Hennig (2007). Sub-sampling is used instead of the
-   bootstrap that Hennig proposes, because a bootstrap duplicates events, and a
-   duplicated event is its own nearest neighbour at distance zero: the resampling
-   scheme would then corrupt the very graph whose stability is in question.
-3. **The parameters.** k and resolution are choices, not measurements. A partition
-   that exists only at one (k, resolution) is a property of the settings.
-4. **The individual event.** Stability is not uniform inside a community. Recording,
-   for each event, how often it lands in the community it landed in on the full data
-   separates the core of a population from its boundary -- and "this event is in
-   community 3" is a much weaker statement for a boundary event than for a core one.
-
-Per-community and per-event resolution is the point. A single global ARI would
-report the partition here as good, and the finding that matters -- that one
-particular split is a coin toss while the rest is solid -- would be invisible.
+A single global index would report a partition as adequate while concealing which of
+the four failed.
 """
 
 from __future__ import annotations
@@ -106,7 +93,7 @@ class SweepPoint:
 
 @dataclass(frozen=True, slots=True)
 class StabilityEvidence:
-    """Everything the section 2.4 claim is made from."""
+    """The complete set of stability measurements for one partition."""
 
     reference_sizes: dict[int, int]
     per_community: tuple[CommunityStability, ...]

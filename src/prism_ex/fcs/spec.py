@@ -1,13 +1,11 @@
-"""Constants of the FCS 3.1 standard used by the reader and the writer.
+"""Constants of the FCS 3.1 standard, shared by the reader and the writer.
 
-Kept in one module so that the reader's strictness and the writer's output are
-provably talking about the same specification: the corruption tests in
-``tests/test_fcs_rejection.py`` mutate files the writer produced, and if the two
-disagreed about, say, the header width, those tests would pass for the wrong
-reason.
+Keeping them in one module ensures both agree on the specification: the corruption
+tests mutate files the writer produced, and divergent constants would make those
+tests pass for the wrong reason.
 
-Reference: Spidlen et al., *Data File Standard for Flow Cytometry, version
-FCS 3.1*, Cytometry Part A 77A:97-100 (2010).
+Reference: Spidlen et al., Data File Standard for Flow Cytometry version FCS 3.1,
+Cytometry Part A 77A:97-100 (2010).
 """
 
 from __future__ import annotations

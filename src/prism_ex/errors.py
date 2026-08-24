@@ -1,13 +1,9 @@
-"""Typed error hierarchy.
+"""Error hierarchy.
 
-Every failure mode the package can produce is a subclass of :class:`PrismExError`,
-so a caller can distinguish "your file is not FCS 3.1" from "your marker name is
-not in this file" without parsing message strings.
-
-The FCS branch is deliberately fine-grained: section 2.1 of the brief requires
-that a malformed, truncated, internally inconsistent or wrong-version file does
-not yield a partially populated result, and a caller who wants to sort a drawer
-of files into "readable" and "why not" needs the reason, not just the failure.
+Every failure mode is a subclass of :class:`PrismExError`, so callers can
+distinguish causes without parsing message strings. The FCS branch is fine-grained
+because a caller triaging a directory of files needs the reason for a rejection,
+not only the fact of it.
 """
 
 from __future__ import annotations
@@ -27,9 +23,8 @@ class FCSError(PrismExError):
 class UnsupportedFCSVersion(FCSError):
     """The file declares a version other than FCS3.1.
 
-    Earlier versions are out of scope (brief, section 2.1); they are rejected
-    rather than best-effort parsed, because a 2.0 file read under 3.1 rules can
-    succeed and be silently wrong.
+    Earlier versions are rejected rather than parsed on a best-effort basis: a 2.0
+    file read under 3.1 rules can succeed and be silently wrong.
     """
 
 

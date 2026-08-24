@@ -106,7 +106,7 @@ def evidence_reader_strictness() -> None:
 
     print(
         "\nReading: a reader that accepts a file whose $TOT contradicts its DATA segment\n"
-        "is behaving correctly for its own users and incorrectly for section 2.1."
+        "is behaving correctly for its own users and incorrectly for a strict reader."
     )
 
 
@@ -247,7 +247,7 @@ def evidence_leiden_over_louvain(fcs) -> None:
         "not connected to one another is not a population, and a stability claim about one\n"
         "would be a claim about nothing. Note also that Louvain's community sizes for the\n"
         "ambiguous pair swing between runs (1386/1223 and 1792/817 across seeds), which is\n"
-        "the same instability section 2.4 reports, found by a second algorithm."
+        "the same instability the stability analysis reports, found independently."
     )
 
 

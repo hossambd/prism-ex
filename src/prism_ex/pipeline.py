@@ -1,12 +1,9 @@
-"""The four results, chained.
+"""Composition of the four stages.
 
-The brief asks for "a single coherent piece of software rather than four unrelated
-exercises in one repository". The chaining is this module: one configuration object
-describes the whole path from a file to a partition, one function walks it, and the
-comparison (2.3), the stability analysis (2.4) and the HTTP endpoint (2.5) all take
-that same configuration rather than re-specifying its parts. When section 2.4 asks
-how stable the partition of 2.2 is, "the partition of 2.2" has to be a thing that
-can be re-run under perturbation with everything else held fixed -- so it is.
+One configuration object describes the path from a file to a partition. Comparison,
+stability analysis and the HTTP endpoint take that configuration rather than
+re-specifying its parts, so a partition can be re-run under perturbation with
+everything else held fixed.
 """
 
 from __future__ import annotations
@@ -83,9 +80,9 @@ class CommunityConfig:
 class CommunityResult:
     """A partition together with everything it was built from.
 
-    The intermediate objects are kept rather than discarded because section 2.3
-    needs the events, section 2.4 needs to rebuild the graph under resampling, and
-    a caller who wants to inspect the graph should not have to recompute it.
+    Intermediate objects are retained because comparison needs the events,
+    resampling needs to rebuild the graph, and a caller inspecting the graph should
+    not have to recompute it.
     """
 
     fcs: FCSFile
@@ -96,7 +93,7 @@ class CommunityResult:
 
     @property
     def sizes(self) -> dict[int, int]:
-        """Community sizes: the result section 2.2 asks for."""
+        """Community identifier to event count, largest first."""
         return self.partition.sizes
 
     def to_dict(self) -> dict[str, Any]:

@@ -1,37 +1,25 @@
-"""Comparing two communities (section 2.3).
+"""Quantitative comparison of two communities.
 
-The brief says the choice of measure, and of the summary it is computed on, is the
-substance of this section. Three choices are made, in increasing order of how much
-they matter.
+Three choices govern what is computed.
 
-**The measure is Cliff's delta, not a difference of means.** Fluorescence within a
-population is heavy-tailed and frequently bimodal where a marker is partially
-expressed; a mean is a poor summary of it and a t-statistic on it is worse. Cliff's
-delta is the probability that a random event from A exceeds a random event from B,
-rescaled to [-1, 1]. It is rank-based, so the asinh cofactor cannot change it; it is
-bounded, so markers are comparable to each other; and it degrades gracefully when a
-population is bimodal, where a difference of medians can be exactly zero for two
-distributions that overlap barely at all.
+The effect size is Cliff's delta: the probability that an event from A exceeds one
+from B, rescaled to [-1, 1]. Fluorescence is heavy-tailed and frequently bimodal, so
+a difference of means is a poor summary. Being rank-based, the statistic is
+invariant under the transform cofactor, which is an analysis parameter that appears
+in no result table.
 
-**The summary is the whole distribution, not a centroid.** Medians and MADs are
-reported because a reader wants to see them, but nothing is computed *from* them.
-Two communities can have identical medians and disjoint supports.
+Distributions are compared rather than centroids. Medians and MADs are reported for
+readability but nothing is computed from them; the multivariate energy distance is
+reported alongside the per-marker table because it is zero only when the two
+distributions coincide.
 
-**The uncertainty is not a p-value, unless it can honestly be one.** This is the
-part that took the thinking. The communities being compared were derived from the
-event matrix; testing them for differences on the same events is circular, and the
-resulting p-value is not small because the populations differ but because the
-clustering separated them -- it would be small on pure noise. Splitting the data,
-clustering on one half and testing on the other, fixes half of that problem: the
-*definition* of the communities is then independent of the test set.
-
-It does not fix the other half. Held-out events still have to be assigned to a
-community, and the assignment uses their marker values. For a marker that was in
-the clustering subspace, the assignment rule guarantees a difference in that
-marker; no split can make the null hypothesis true. So this module reports
-p-values only for markers *outside* the clustering subspace, where the split
-argument is sound, and effect sizes with bootstrap intervals everywhere. Refusing
-to compute the other p-values is the honest result, not a missing feature.
+P-values are computed only where they can be valid. The communities were derived
+from the event matrix, so testing them on the same events is circular. Splitting the
+data makes the community definitions independent of the test set, but held-out
+events must still be assigned, and the assignment uses their marker values: for a
+marker inside the clustering subspace the assignment rule guarantees a difference.
+P-values are therefore restricted to markers outside the clustering subspace, and
+the restriction is stated in the output.
 """
 
 from __future__ import annotations
@@ -429,9 +417,8 @@ def _split_p_values(
 
     Returns an empty mapping and a reason -- rather than raising -- when the
     communities cannot be recovered on the training half. "This community is not
-    stable enough to test" is an answer, and it is the same answer section 2.4 is
-    about; a p-value computed against a community that half the data does not
-    contain would be worse than none.
+    stable enough to test" is itself the result; a p-value computed against a
+    community that half the data does not contain would be worse than none.
     """
     testable = [m for m in markers if m.casefold() not in clustering_markers]
     if not testable:

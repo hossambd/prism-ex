@@ -1,12 +1,10 @@
 """Command line interface.
 
-Written with :mod:`argparse` rather than a CLI framework: the package has five
-subcommands and no need for a dependency that a reviewer then has to install to
-run the worked example in the README.
+Implemented with :mod:`argparse` to avoid a dependency required only to run the
+worked example in the README.
 
-Every subcommand can emit JSON (``--json``), because the point of a CLI in a
-scientific package is that its output can be a file in a pipeline rather than
-something a human retypes.
+Every subcommand can emit JSON, so output can feed a pipeline rather than be
+retyped.
 """
 
 from __future__ import annotations
@@ -58,7 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
     info.set_defaults(handler=_info)
 
     communities = subparsers.add_parser(
-        "communities", help="find communities and report their sizes (section 2.2)"
+        "communities", help="find communities in a marker subspace and report their sizes"
     )
     _add_clustering_arguments(communities)
     communities.add_argument("--json", action="store_true")
@@ -68,7 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
     communities.set_defaults(handler=_communities)
 
     compare = subparsers.add_parser(
-        "compare", help="compare two communities' marker profiles (section 2.3)"
+        "compare", help="compare the marker profiles of two communities"
     )
     _add_clustering_arguments(compare)
     compare.add_argument("--a", type=int, required=True, help="first community id")
@@ -82,9 +80,7 @@ def build_parser() -> argparse.ArgumentParser:
     compare.add_argument("--json", action="store_true")
     compare.set_defaults(handler=_compare)
 
-    stability = subparsers.add_parser(
-        "stability", help="gather the evidence for the section 2.4 claim"
-    )
+    stability = subparsers.add_parser("stability", help="measure how stable the partition is")
     _add_clustering_arguments(stability)
     stability.add_argument("--resamples", type=int, default=40)
     stability.add_argument("--fraction", type=float, default=0.8)
@@ -92,9 +88,7 @@ def build_parser() -> argparse.ArgumentParser:
     stability.add_argument("--json", action="store_true")
     stability.set_defaults(handler=_stability)
 
-    serve = subparsers.add_parser(
-        "serve", help="run the optional HTTP endpoint (section 2.5, needs [api])"
-    )
+    serve = subparsers.add_parser("serve", help="run the HTTP endpoint (requires the [api] extra)")
     serve.add_argument("--host", default="127.0.0.1")
     serve.add_argument("--port", type=int, default=8000)
     serve.set_defaults(handler=_serve)
