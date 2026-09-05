@@ -40,7 +40,7 @@ dev = [
     "pytest-cov>=5.0",
     "ruff>=0.5",
     "flowio>=1.3",          # differential oracle for the reader; see tests/test_fcs_oracle.py
-    "httpx>=0.27",          # fastapi TestClient
+    "httpx2>=2.0,<3",       # Starlette TestClient
     "build>=1.2",
 ]
 
@@ -71,3 +71,7 @@ ignore = ["B008"]   # FastAPI dependency defaults are function calls by design
 [tool.coverage.run]
 source = ["prism_ex"]
 branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true

@@ -36,10 +36,10 @@ jobs:
           .venv/bin/pip install ".[dev,api]"
 
       - name: Lint
-        run: .venv/bin/ruff check src tests
+        run: .venv/bin/ruff check src tests scripts
 
       - name: Format check
-        run: .venv/bin/ruff format --check src tests
+        run: .venv/bin/ruff format --check src tests scripts
 
       - name: Test
         run: .venv/bin/pytest --cov=prism_ex --cov-report=term-missing
@@ -49,6 +49,7 @@ jobs:
           .venv/bin/prism-ex demo /tmp/ci-demo.fcs --events 3000
           .venv/bin/prism-ex info /tmp/ci-demo.fcs
           .venv/bin/prism-ex communities /tmp/ci-demo.fcs --k 20
+          .venv/bin/python scripts/tour_complet.py --section 1
 
   build:
     name: build sdist and wheel

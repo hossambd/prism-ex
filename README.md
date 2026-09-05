@@ -22,16 +22,27 @@ matrix", and the shipped example data is synthetic.
 
 Into a clean virtual environment, from a checkout:
 
-```bash
+Linux/macOS:
+
+```sh
 python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install .
+source .venv/bin/activate
+python -m pip install .
+```
+
+Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install .
 ```
 
 Optional extras: `pip install ".[api]"` for the HTTP endpoint, `".[pandas]"` for
 `FCSFile.to_dataframe()`, `".[dev]"` for the test suite and linter.
 
-Python 3.10 to 3.13. Everything below runs on a laptop in under a minute.
+Python 3.10 to 3.13. Most commands below finish on a laptop in under a minute;
+the full stability analysis and evidence script intentionally take longer.
 
 ## Worked example
 
@@ -61,6 +72,14 @@ head -c 200 demo.fcs > truncated.fcs && prism-ex info truncated.fcs
 # TruncatedData: TEXT segment ends at byte 732 but the file is 200 bytes
 ```
 
+PowerShell equivalent:
+
+```powershell
+$bytes = [IO.File]::ReadAllBytes("demo.fcs")[0..199]
+[IO.File]::WriteAllBytes("truncated.fcs", $bytes)
+prism-ex info truncated.fcs
+```
+
 ### 2. Find communities
 
 ```bash
@@ -82,9 +101,8 @@ input digest, the package version and the full configuration — attached.
 
 ### 3. Compare two of them
 
-```bash
-prism-ex compare demo.fcs --a 1 --b 2 --compare-markers CD3,CD19,Viability,FSC-A \
-    --inference split
+```sh
+prism-ex compare demo.fcs --a 1 --b 2 --compare-markers CD3,CD19,Viability,FSC-A --inference split
 ```
 
 ```
@@ -139,11 +157,17 @@ being handed the pieces again.
 
 ### Optional HTTP endpoint
 
-```bash
+Run the server in one terminal:
+
+```sh
 pip install ".[api]"
-prism-ex serve &
-curl -F file=@demo.fcs -F markers=CD3,CD4,CD8,CD19,CD56 \
-     http://127.0.0.1:8000/communities/sizes
+prism-ex serve
+```
+
+Then call it from another terminal (use `curl.exe` in PowerShell):
+
+```sh
+curl -F file=@demo.fcs -F markers=CD3,CD4,CD8,CD19,CD56 http://127.0.0.1:8000/communities/sizes
 ```
 
 Returns the community sizes and the provenance record. One endpoint, no persistence,
@@ -182,13 +206,20 @@ python scripts/decision_evidence.py --only 5  # just one section
 Two of the eight sections report null results that do not support the default
 chosen. They are kept.
 
+For a narrated tour of every public feature and its output:
+
+```sh
+python scripts/tour_complet.py --rapide
+python scripts/tour_complet.py --section 7
+```
+
 ## Tests
 
 ```bash
 pip install ".[dev]"
 pytest                      # ~12 s
 pytest -m "not slow"        # skips the resampling-heavy cases
-ruff check src tests && ruff format --check src tests
+ruff check src tests scripts && ruff format --check src tests scripts
 ```
 
 Every fixture is generated in code — nothing depends on a file that exists only on
@@ -198,8 +229,8 @@ implementation (`flowio`, a development dependency only) to extract the same eve
 matrix.
 
 CI installs the package into a clean virtual environment on four Python versions,
-lints, runs the tests, and then runs the commands from this README — so a README
-that has drifted from the code fails the build.
+lints, runs the tests with an 85% coverage floor, and exercises the representative
+`demo`, `info`, `communities`, and guided-tour commands from this README.
 
 ## Reproducibility
 
