@@ -1,7 +1,6 @@
 """prism-ex: FCS 3.1 ingestion, community detection, comparison and stability.
 
-A small package answering the four results of the project,
-in the order they build on each other:
+The package exposes four main capabilities, in the order they build on each other:
 
 * :func:`prism_ex.fcs.read_fcs` -- strict FCS 3.1 ingestion (2.1)
 * :func:`prism_ex.pipeline.find_communities` -- neighbourhood graph and communities (2.2)
